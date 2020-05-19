@@ -143,6 +143,7 @@ where
     }
 
     fn call_impl(&self, args: ARGS) -> Result<RET> {
+        info!("call_impl 0");
         let stack = self.rt.stack_mut();
         let ret = unsafe {
             args.push_on_stack(stack);
@@ -165,17 +166,30 @@ where
         _r0: ffi::m3reg_t,
         _fp0: f64,
     ) -> ffi::m3ret_t {
+        info!("call_impl 1");
         let possible_trap = ffi::m3_Yield();
         if !possible_trap.is_null() {
-            possible_trap.cast()
+            info!("call_impl 1.1");
+            let ret = possible_trap.cast();
+            info!("call_impl 1.2");
+            ret
         } else {
-            (*_pc.cast::<ffi::IM3Operation>()).expect("IM3Operation was null")(
-                _pc.add(1),
+            info!("call_impl 1.3");
+            let added_pc = _pc.add(1);
+            info!("call_impl 1.4");
+            let resp = *_pc.cast::<ffi::IM3Operation>();
+            info!("call_impl 1.5");
+            let expected_funcval = resp.expect("blah blah");
+            info!("call_impl 1.6 {:?} {:?} {:?} {:?} {:?}", added_pc, _sp, _mem, _r0, _fp0);
+            let ret = expected_funcval(
+                added_pc,
                 _sp,
                 _mem,
                 _r0,
                 _fp0,
-            )
+            );
+            info!("call_impl 1.7");
+            ret
         }
     }
 }
@@ -214,6 +228,7 @@ where
     /// This is implemented with variable arguments depending on the functions ARGS type.
     #[inline]
     pub fn call(&self, arg: ARG) -> Result<RET> {
+        info!("call 2");
         self.call_impl(arg)
     }
 }
@@ -226,6 +241,7 @@ where
     /// This is implemented with variable arguments depending on the functions ARGS type.
     #[inline]
     pub fn call(&self) -> Result<RET> {
+        info!("call 3");
         self.call_impl(())
     }
 }

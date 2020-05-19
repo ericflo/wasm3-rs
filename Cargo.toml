@@ -20,6 +20,7 @@ use-32bit-slots = ["ffi/use-32bit-slots"]
 
 [dependencies]
 cty = "0.2"
+log = "0.4"
 
 [dependencies.ffi]
 path = "wasm3-sys"

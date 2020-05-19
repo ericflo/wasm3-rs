@@ -4,6 +4,9 @@
 #![allow(clippy::new_without_default, clippy::match_bool)]
 //! A rust wrapper for [WASM3](https://github.com/wasm3/wasm3).
 
+#[macro_use]
+extern crate log;
+
 extern crate alloc;
 
 pub mod error;
